@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wheelie Auto Care | Futuristic Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="dashboard">
+  <!-- Sidebar Navigation -->
+  <div class="sidebar">
+    <div class="logo">
+      <i class="fas fa-car-side"></i>
+      <span>WHEELIE</span>
+    </div>
+    <nav>
+      <ul>
+        <li class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</li>
+        <li><i class="fas fa-calendar-check"></i> Bookings</li>
+        <li><i class="fas fa-users-cog"></i> Technicians</li>
+        <li><i class="fas fa-users"></i> Clients</li>
+        <li><i class="fas fa-chart-line"></i> Analytics</li>
+        <li><i class="fas fa-cog"></i> Settings</li>
+      </ul>
+    </nav>
+    <div class="ai-assistant">
+      <div class="pulse"></div>
+      <i class="fas fa-robot"></i>
+      <span>AI Assistant</span>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <header>
+      <div class="search-bar">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Search...">
+      </div>
+      <div class="user-profile">
+        <img src="https://via.placeholder.com/40" alt="Profile">
+        <span>Admin</span>
+        <i class="fas fa-chevron-down"></i>
+      </div>
+    </header>
+
+    <div class="dashboard-grid">
+      <!-- Stats Cards -->
+      <div class="card stat-card">
+        <div class="icon blue">
+          <i class="fas fa-calendar-day"></i>
+        </div>
+        <div class="info">
+          <h3>Today's Bookings</h3>
+          <h2>24</h2>
+          <p>+5 from yesterday</p>
+        </div>
+      </div>
+
+      <div class="card stat-card">
+        <div class="icon green">
+          <i class="fas fa-user-clock"></i>
+        </div>
+        <div class="info">
+          <h3>Active Techs</h3>
+          <h2>8</h2>
+          <p>2 available</p>
+        </div>
+      </div>
+
+      <div class="card stat-card">
+        <div class="icon purple">
+          <i class="fas fa-dollar-sign"></i>
+        </div>
+        <div class="info">
+          <h3>Today's Revenue</h3>
+          <h2>$4,820</h2>
+          <p>15% above avg</p>
+        </div>
+      </div>
+
+      <div class="card stat-card">
+        <div class="icon orange">
+          <i class="fas fa-star"></i>
+        </div>
+        <div class="info">
+          <h3>Avg. Rating</h3>
+          <h2>4.8</h2>
+          <p>92% satisfaction</p>
+        </div>
+      </div>
+
+      <!-- Bookings Table -->
+      <div class="card wide-card">
+        <div class="card-header">
+          <h3>Recent Bookings</h3>
+          <button class="neon-button">View All</button>
+        </div>
+        <table>
+          <thead>
+          <tr>
+            <th>ID</th>
+            <th>Customer</th>
+            <th>Service</th>
+            <th>Vehicle</th>
+            <th>Tech</th>
+            <th>Status</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>#WC-5421</td>
+            <td>John Smith</td>
+            <td>Alloy Repair</td>
+            <td>BMW M4</td>
+            <td>Mike T.</td>
+            <td><span class="status in-progress">In Progress</span></td>
+          </tr>
+          <tr>
+            <td>#WC-5420</td>
+            <td>Sarah Johnson</td>
+            <td>Full Detailing</td>
+            <td>Tesla Model 3</td>
+            <td>Alex R.</td>
+            <td><span class="status completed">Completed</span></td>
+          </tr>
+          <tr>
+            <td>#WC-5419</td>
+            <td>Robert Chen</td>
+            <td>Scratch Removal</td>
+            <td>Porsche 911</td>
+            <td>Jamie L.</td>
+            <td><span class="status pending">Pending</span></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Analytics Chart -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Weekly Revenue</h3>
+        </div>
+        <canvas id="revenueChart"></canvas>
+      </div>
+
+      <!-- Technician Status -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Technician Status</h3>
+        </div>
+        <div class="tech-grid">
+          <div class="tech-card">
+            <img src="https://via.placeholder.com/60" alt="Tech">
+            <h4>Mike T.</h4>
+            <p>Alloy Specialist</p>
+            <div class="tech-status available">Available</div>
+          </div>
+          <div class="tech-card">
+            <img src="https://via.placeholder.com/60" alt="Tech">
+            <h4>Alex R.</h4>
+            <p>Detailing Pro</p>
+            <div class="tech-status busy">On Job</div>
+          </div>
+          <div class="tech-card">
+            <img src="https://via.placeholder.com/60" alt="Tech">
+            <h4>Jamie L.</h4>
+            <p>Paint Expert</p>
+            <div class="tech-status available">Available</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WHEELIE | Enter Hyperdrive</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* 🌑 Base Reset */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      overflow: hidden;
+      background: #000;
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* 🚀 Canvas Container */
+    #tunnel-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    /* 💎 UI Layer */
+    .ui-layer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 3rem;
+      color: white;
+      pointer-events: none;
+    }
+
+    /* 🔮 Logo */
+    .logo {
+      font-size: 4rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #2563eb, #f59e0b);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 20px rgba(37, 99, 235, 0.5);
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    /* 📟 Glitch Text */
+    .glitch-text {
+      font-size: 1.5rem;
+      color: rgba(255, 255, 255, 0.8);
+      position: relative;
+      opacity: 0;
+    }
+    .glitch-text::before, .glitch-text::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.8;
+    }
+    .glitch-text::before {
+      color: #0ff;
+      z-index: -1;
+      animation: glitch 3s infinite;
+    }
+    .glitch-text::after {
+      color: #f0f;
+      z-index: -2;
+      animation: glitch 2s infinite reverse;
+    }
+
+    /* ⚡ Progress Bar */
+    .progress-container {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      margin-top: 2rem;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #2563eb, #f59e0b);
+      transition: width 0.3s ease;
+      box-shadow: 0 0 15px rgba(37, 99, 235, 0.5);
+    }
+
+    /* 🌀 Animations */
+    @keyframes glitch {
+      0% { transform: translate(0); }
+      20% { transform: translate(-2px, 2px); }
+      40% { transform: translate(-2px, -2px); }
+      60% { transform: translate(2px, 2px); }
+      80% { transform: translate(2px, -2px); }
+      100% { transform: translate(0); }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .floating { animation: float 3s ease-in-out infinite; }
+  </style>
+</head>
+<body>
+<!-- 🌌 3D Tunnel -->
+<div id="tunnel-container"></div>
+
+<!-- 💎 UI Elements -->
+<div class="ui-layer">
+  <div>
+    <h1 class="logo">
+      <i class="fas fa-car floating"></i> WHEELIE
+    </h1>
+    <p class="glitch-text" data-text="Initializing quantum interface...">
+      Initializing quantum interface...
+    </p>
+  </div>
+
+  <div>
+    <div class="progress-container">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 🚀 Three.js & GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.11.4/dist/gsap.min.js"></script>
+
+<script>
+  // 🌌 3D Tunnel Effect
+  const container = document.getElementById('tunnel-container');
+  let scene, camera, renderer, tunnel, car;
+
+  // � AI Messages
+  const messages = [
+    "Booting neural networks...",
+    "Calibrating nano-wash systems...",
+    "Syncing with satellite grid...",
+    "Optimizing particle flow...",
+    "Ready to hyperdrive."
+  ];
+
+  init();
+
+  function init() {
+    // 🖼️ Scene Setup
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 30;
+
+    // 🎨 Renderer
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    container.appendChild(renderer.domElement);
+
+    // 💡 Lights
+    const ambientLight = new THREE.AmbientLight(0x404040);
+    scene.add(ambientLight);
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight.position.set(1, 1, 1);
+    scene.add(directionalLight);
+
+    // 🌀 Create Tunnel
+    createTunnel();
+
+    // 🏎️ Add Floating Car
+    createCar();
+
+    // 📡 Start Loading Sequence
+    startLoading();
+
+    // 🔄 Handle Resize
+    window.addEventListener('resize', onWindowResize);
+  }
+
+  function createTunnel() {
+    const geometry = new THREE.TorusGeometry(10, 3, 16, 100);
+    const material = new THREE.MeshPhongMaterial({
+      color: 0x2563eb,
+      emissive: 0x0a2463,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.7
+    });
+    tunnel = new THREE.Mesh(geometry, material);
+    scene.add(tunnel);
+  }
+
+  function createCar() {
+    const geometry = new THREE.BoxGeometry(3, 1.5, 6);
+    const material = new THREE.MeshPhongMaterial({
+      color: 0xf59e0b,
+      emissive: 0x92400e,
+      specular: 0xffffff,
+      shininess: 50
+    });
+    car = new THREE.Mesh(geometry, material);
+    car.position.y = -5;
+    scene.add(car);
+
+    // Animate car floating up
+    gsap.to(car.position, { y: 0, duration: 2, ease: "elastic.out(1, 0.5)" });
+  }
+
+  function startLoading() {
+    // 💬 Update AI Messages
+    const glitchText = document.querySelector('.glitch-text');
+    let msgIndex = 0;
+
+    const messageInterval = setInterval(() => {
+      if (msgIndex < messages.length - 1) {
+        msgIndex++;
+        glitchText.setAttribute('data-text', messages[msgIndex]);
+        glitchText.textContent = messages[msgIndex];
+      }
+    }, 3000);
+
+    // 📊 Progress Bar
+    let progress = 0;
+    const progressBar = document.getElementById('progressBar');
+
+    const progressInterval = setInterval(() => {
+      progress += Math.random() * 5;
+      if (progress > 100) progress = 100;
+      progressBar.style.width = `${progress}%`;
+
+      // Finish sequence
+      if (progress === 100) {
+        clearInterval(progressInterval);
+        clearInterval(messageInterval);
+        completeSequence();
+      }
+    }, 200);
+
+    // ✨ Animate UI In
+    gsap.to('.logo', { opacity: 1, y: 0, duration: 1.5, delay: 0.5 });
+    gsap.to('.glitch-text', { opacity: 1, duration: 1, delay: 1 });
+  }
+
+  function completeSequence() {
+    // 🌠 Final animation before redirect
+    gsap.to(camera.position, { z: 100, duration: 2 });
+    gsap.to('.ui-layer', { opacity: 0, duration: 1.5 });
+
+    setTimeout(() => {
+      window.location.href = "index.html"; // Your main site
+    }, 2000);
+  }
+
+  function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  }
+
+  // 🎥 Animation Loop
+  function animate() {
+    requestAnimationFrame(animate);
+
+    if (tunnel) {
+      tunnel.rotation.x += 0.005;
+      tunnel.rotation.y += 0.01;
+    }
+
+    if (car) {
+      car.rotation.y += 0.02;
+    }
+
+    renderer.render(scene, camera);
+  }
+
+  animate();
+</script>
+</body>
+</html>

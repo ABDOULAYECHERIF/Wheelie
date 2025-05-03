@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wheelie | Book Mobile Auto Services</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #0066FF;
+      --primary-light: #E6F0FF;
+      --primary-dark: #0052CC;
+      --secondary: #00C4FF;
+      --dark: #0F172A;
+      --light: #F8FAFC;
+      --success: #00D1A9;
+      --error: #FF3B30;
+      --warning: #FF9500;
+      --gold: #FFD700;
+      --platinum: #E5E4E2;
+      --diamond: #B9F2FF;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+      --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 25px rgba(0, 102, 255, 0.15);
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background-color: var(--light);
+      color: var(--dark);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-md);
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logo i {
+      color: var(--gold);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+
+    .nav-links a:hover {
+      opacity: 0.9;
+      text-decoration: underline;
+    }
+
+    /* Booking Container */
+    .booking-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      margin: 2rem auto;
+    }
+
+    @media (min-width: 768px) {
+      .booking-container {
+        grid-template-columns: 300px 1fr;
+      }
+    }
+
+    /* Client Info Section */
+    .client-section {
+      background: white;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: var(--shadow-lg);
+      height: fit-content;
+      position: sticky;
+      top: 6rem;
+    }
+
+    .client-section h2 {
+      margin-bottom: 1.5rem;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .client-section h2 i {
+      color: var(--primary);
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+      position: relative;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--dark);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid #E2E8F0;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      transition: var(--transition);
+      background-color: #fff;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+    }
+
+    /* Services Section */
+    .services-section {
+      background: white;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      color: var(--primary);
+      position: relative;
+      padding-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-title i {
+      color: var(--primary);
+    }
+
+    .section-title:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 50px;
+      height: 3px;
+      background: var(--primary);
+      border-radius: 3px;
+    }
+
+    .service-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
+
+    .service-card {
+      border: 1px solid #E2E8F0;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .service-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .service-card.selected {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      box-shadow: 0 0 0 2px var(--primary);
+    }
+
+    .service-icon {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+
+    .service-price {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-top: 0.5rem;
+      color: var(--primary-dark);
+    }
+
+    .service-duration {
+      font-size: 0.85rem;
+      color: #64748B;
+      margin-top: 0.25rem;
+    }
+
+    /* Date/Time Selection */
+    .datetime-selection {
+      margin-top: 2rem;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .calendar-nav {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .calendar-nav-btn {
+      background: var(--primary-light);
+      color: var(--primary);
+      border: none;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .calendar-nav-btn:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .calendar-day-header {
+      text-align: center;
+      font-weight: 600;
+      padding: 0.5rem;
+      color: var(--dark);
+    }
+
+    .calendar-day {
+      text-align: center;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .calendar-day.available:hover {
+      background: var(--primary-light);
+    }
+
+    .calendar-day.selected {
+      background: var(--primary);
+      color: white;
+      font-weight: 600;
+    }
+
+    .calendar-day.unavailable {
+      color: #CBD5E1;
+      cursor: not-allowed;
+      background: #F1F5F9;
+    }
+
+    .calendar-day.past {
+      opacity: 0.5;
+    }
+
+    .calendar-day.weekend {
+      color: var(--primary-dark);
+    }
+
+    .calendar-day.today {
+      font-weight: bold;
+      background: var(--primary-light);
+    }
+
+    .time-slots-container {
+      margin-top: 1.5rem;
+    }
+
+    .time-slots-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .time-slots {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .time-slot {
+      padding: 0.75rem;
+      text-align: center;
+      border-radius: 0.5rem;
+      background: var(--light);
+      cursor: pointer;
+      transition: var(--transition);
+      border: 1px solid #E2E8F0;
+    }
+
+    .time-slot:hover {
+      background: var(--primary-light);
+      border-color: var(--primary);
+    }
+
+    .time-slot.selected {
+      background: var(--primary);
+      color: white;
+      font-weight: 600;
+      border-color: var(--primary);
+    }
+
+    .time-slot.unavailable {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background: #F1F5F9;
+    }
+
+    /* Confirmation Section */
+    .confirmation-section {
+      margin-top: 2rem;
+      background: var(--light);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      border: 1px solid #E2E8F0;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .confirmation-details {
+      margin-top: 1rem;
+      background: white;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #E2E8F0;
+    }
+
+    .detail-row:last-child {
+      border-bottom: none;
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      border: none;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-block {
+      display: block;
+      width: 100%;
+      margin-top: 1rem;
+    }
+
+    /* Success Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 1rem;
+      padding: 2rem;
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .modal-icon {
+      font-size: 4rem;
+      color: var(--success);
+      margin-bottom: 1rem;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Loading Spinner */
+    .spinner {
+      display: inline-block;
+      width: 1.5rem;
+      height: 1.5rem;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Tooltip */
+    .tooltip {
+      position: relative;
+      display: inline-block;
+    }
+
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 200px;
+      background-color: var(--dark);
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 0.5rem;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-size: 0.85rem;
+      font-weight: normal;
+    }
+
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .client-section {
+        position: static;
+      }
+
+      .service-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .time-slots {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+<!-- Header -->
+<header class="header">
+  <div class="container nav-container">
+    <div class="logo">
+      <i class="fas fa-car"></i>
+      <span>Wheelie</span>
+    </div>
+    <nav class="nav-links">
+      <a href="#"><i class="fas fa-home"></i> Home</a>
+      <a href="#"><i class="fas fa-info-circle"></i> About</a>
+      <a href="#"><i class="fas fa-phone"></i> Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="booking-container">
+    <!-- Client Information -->
+    <section class="client-section">
+      <h2><i class="fas fa-user"></i> Your Information</h2>
+      <form id="clientForm" onsubmit="return processBooking(event)">
+        <!-- Remove all FormSubmit hidden inputs -->
+        <!-- Keep all visible form fields -->
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-control" id="clientName" name="customer_name" required placeholder="John Doe">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-control" id="clientEmail" name="customer_email" required placeholder="john@example.com">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Phone Number</label>
+          <input type="tel" class="form-control" id="clientPhone" name="customer_phone" required placeholder="(123) 456-7890">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Service Address</label>
+          <textarea class="form-control" id="clientAddress" name="service_address" rows="2" required placeholder="Where should we come to service your vehicle?"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Vehicle Make/Model</label>
+          <input type="text" class="form-control" id="clientVehicle" name="vehicle" required placeholder="Toyota Camry">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Special Instructions</label>
+          <textarea class="form-control" id="clientNotes" name="special_instructions" rows="3" placeholder="Any special requests or details about your vehicle..."></textarea>
+        </div>
+
+        <!-- Add hidden field for booking reference -->
+        <input type="hidden" name="booking_reference" id="formReference">
+      </form>
+    </section>
+
+    <!-- Services & Booking -->
+    <section class="services-section">
+      <h1 class="section-title"><i class="fas fa-concierge-bell"></i> Select Your Service</h1>
+
+      <div class="service-grid" id="serviceGrid">
+        <!-- Services will be loaded here -->
+      </div>
+
+      <!-- Date/Time Selection -->
+      <div class="datetime-selection" id="datetimeSelection" style="display: none;">
+        <h2 class="section-title"><i class="fas fa-calendar-alt"></i> Select Date & Time</h2>
+
+        <div class="calendar-header">
+          <h3 id="currentMonth">November 2023</h3>
+          <div class="calendar-nav">
+            <button class="calendar-nav-btn" id="prevMonth"><i class="fas fa-chevron-left"></i></button>
+            <button class="calendar-nav-btn" id="nextMonth"><i class="fas fa-chevron-right"></i></button>
+          </div>
+        </div>
+
+        <div class="calendar-grid" id="calendarGrid">
+          <!-- Calendar will be generated here -->
+        </div>
+
+        <div class="time-slots-container">
+          <div class="time-slots-header">
+            <h3>Available Time Slots</h3>
+            <div class="tooltip">
+              <i class="fas fa-info-circle" style="color: var(--primary);"></i>
+              <span class="tooltiptext">Time slots are in 30-minute increments. Select a date first.</span>
+            </div>
+          </div>
+          <div class="time-slots" id="timeSlots">
+            <!-- Time slots will be generated here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Confirmation -->
+      <div class="confirmation-section" id="confirmationSection" style="display: none;">
+        <h2 class="section-title"><i class="fas fa-check-circle"></i> Confirm Your Booking</h2>
+
+        <div class="confirmation-details">
+          <div class="detail-row">
+            <span>Service:</span>
+            <span id="confirmService">-</span>
+          </div>
+          <div class="detail-row">
+            <span>Date:</span>
+            <span id="confirmDate">-</span>
+          </div>
+          <div class="detail-row">
+            <span>Time:</span>
+            <span id="confirmTime">-</span>
+          </div>
+          <div class="detail-row">
+            <span>Vehicle:</span>
+            <span id="confirmVehicle">-</span>
+          </div>
+          <div class="detail-row">
+            <span>Address:</span>
+            <span id="confirmAddress">-</span>
+          </div>
+          <div class="detail-row">
+            <span>Total:</span>
+            <span id="confirmTotal">-</span>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-block" id="confirmBooking">
+          <i class="fas fa-calendar-check"></i> Confirm Booking
+        </button>
+
+        <p style="text-align: center; margin-top: 1rem; font-size: 0.9rem; color: #64748B;">
+          <i class="fas fa-info-circle"></i> Payment will be collected in-person after service
+        </p>
+      </div>
+    </section>
+  </div>
+</main>
+
+<!-- Success Modal -->
+<div class="modal" id="successModal">
+  <div class="modal-content">
+    <div class="modal-icon">
+      <i class="fas fa-check-circle"></i>
+    </div>
+    <h2>Booking Confirmed!</h2>
+    <p id="successMessage">Your service has been scheduled successfully.</p>
+    <p>A confirmation has been sent to your email.</p>
+    <button class="btn btn-primary" style="margin-top: 1.5rem;" id="closeModal">
+      <i class="fas fa-thumbs-up"></i> Got It!
+    </button>
+  </div>
+</div>
+
+<script>
+  // DOM Elements
+  const serviceGrid = document.getElementById('serviceGrid');
+  const datetimeSelection = document.getElementById('datetimeSelection');
+  const confirmationSection = document.getElementById('confirmationSection');
+  const successModal = document.getElementById('successModal');
+  const clientForm = document.getElementById('clientForm');
+
+  // Booking Data
+  const bookingData = {
+    service: null,
+    date: null,
+    time: null,
+    client: {
+      name: '',
+      email: '',
+      phone: '',
+      address: '',
+      vehicle: '',
+      notes: ''
+    }
+  };
+
+  // Available Services
+  const services = [
+    {
+      id: 1,
+      name: 'Premium Wash',
+      description: 'Exterior wash, interior vacuum, and window cleaning',
+      price: 39.99,
+      duration: 45,
+      icon: 'fa-car',
+      category: 'detailing'
+    },
+    {
+      id: 2,
+      name: 'Oil Change',
+      description: 'Full synthetic oil change with filter replacement',
+      price: 59.99,
+      duration: 30,
+      icon: 'fa-oil-can',
+      category: 'maintenance'
+    },
+    {
+      id: 3,
+      name: 'Interior Detailing',
+      description: 'Deep clean and conditioning of all interior surfaces',
+      price: 129.99,
+      duration: 90,
+      icon: 'fa-spray-can',
+      category: 'detailing'
+    },
+    {
+      id: 4,
+      name: 'Tire Rotation',
+      description: 'Rotate tires and inspect tread wear',
+      price: 29.99,
+      duration: 30,
+      icon: 'fa-tire',
+      category: 'maintenance'
+    },
+    {
+      id: 5,
+      name: 'Full Detailing',
+      description: 'Complete interior and exterior detailing',
+      price: 199.99,
+      duration: 120,
+      icon: 'fa-car-side',
+      category: 'detailing'
+    },
+    {
+      id: 6,
+      name: 'Battery Check',
+      description: 'Battery health test and terminal cleaning',
+      price: 19.99,
+      duration: 20,
+      icon: 'fa-battery-three-quarters',
+      category: 'maintenance'
+    }
+  ];
+
+  // Initialize the Booking System
+  function initBookingSystem() {
+    // Load services
+    renderServices();
+
+    // Set up event listeners
+    document.getElementById('clientName').addEventListener('input', updateClientData);
+    document.getElementById('clientEmail').addEventListener('input', updateClientData);
+    document.getElementById('clientPhone').addEventListener('input', updateClientData);
+    document.getElementById('clientAddress').addEventListener('input', updateClientData);
+    document.getElementById('clientVehicle').addEventListener('input', updateClientData);
+    document.getElementById('clientNotes').addEventListener('input', updateClientData);
+
+    document.getElementById('confirmBooking').addEventListener('click', confirmBooking);
+    document.getElementById('closeModal').addEventListener('click', () => {
+      successModal.style.display = 'none';
+    });
+
+    // Initialize calendar
+    initCalendar();
+  }
+
+  // Render Services
+  function renderServices() {
+    serviceGrid.innerHTML = '';
+
+    services.forEach(service => {
+      const card = document.createElement('div');
+      card.className = 'service-card';
+      card.innerHTML = `
+        <div class="service-icon">
+          <i class="fas ${service.icon}"></i>
+        </div>
+        <h3>${service.name}</h3>
+        <p>${service.description}</p>
+        <div class="service-price">$${service.price.toFixed(2)}</div>
+        <div class="service-duration">${service.duration} min service</div>
+      `;
+
+      card.addEventListener('click', () => selectService(service));
+      serviceGrid.appendChild(card);
+    });
+  }
+
+  // Select Service
+  function selectService(service) {
+    // Remove previous selection
+    document.querySelectorAll('.service-card').forEach(card => {
+      card.classList.remove('selected');
+    });
+
+    // Add selection to clicked card
+    event.currentTarget.classList.add('selected');
+
+    // Update booking data
+    bookingData.service = service;
+
+    // Show date/time selection
+    datetimeSelection.style.display = 'block';
+
+    // Scroll to date/time selection
+    datetimeSelection.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // Initialize Calendar
+  function initCalendar() {
+    const today = new Date();
+    updateCalendar(today);
+
+    // Navigation buttons
+    document.getElementById('prevMonth').addEventListener('click', () => {
+      const currentMonth = new Date(document.getElementById('currentMonth').textContent + ' 1');
+      currentMonth.setMonth(currentMonth.getMonth() - 1);
+      updateCalendar(currentMonth);
+    });
+
+    document.getElementById('nextMonth').addEventListener('click', () => {
+      const currentMonth = new Date(document.getElementById('currentMonth').textContent + ' 1');
+      currentMonth.setMonth(currentMonth.getMonth() + 1);
+      updateCalendar(currentMonth);
+    });
+  }
+
+  // Update Calendar
+  function updateCalendar(date) {
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'];
+    document.getElementById('currentMonth').textContent = `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+
+    const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+    const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    const today = new Date();
+
+    let calendarHTML = '';
+
+    // Day headers
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    dayNames.forEach(day => {
+      calendarHTML += `<div class="calendar-day-header">${day}</div>`;
+    });
+
+    // Empty cells for days before the 1st
+    for (let i = 0; i < firstDay.getDay(); i++) {
+      calendarHTML += `<div class="calendar-day unavailable"></div>`;
+    }
+
+    // Days of the month
+    for (let i = 1; i <= lastDay.getDate(); i++) {
+      const currentDate = new Date(date.getFullYear(), date.getMonth(), i);
+      const isPast = currentDate < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      const isWeekend = currentDate.getDay() === 0 || currentDate.getDay() === 6;
+      const isToday = currentDate.toDateString() === today.toDateString();
+
+      let dayClasses = ['calendar-day'];
+
+      if (isPast) {
+        dayClasses.push('past', 'unavailable');
+      } else if (isWeekend) {
+        dayClasses.push('weekend', 'available');
+      } else {
+        dayClasses.push('available');
+      }
+
+      if (isToday) {
+        dayClasses.push('today');
+      }
+
+      calendarHTML += `
+        <div class="${dayClasses.join(' ')}" data-date="${currentDate.toISOString().split('T')[0]}">
+          ${i}
+        </div>
+      `;
+    }
+
+    document.getElementById('calendarGrid').innerHTML = calendarHTML;
+
+    // Add event listeners to available days
+    document.querySelectorAll('.calendar-day.available').forEach(day => {
+      day.addEventListener('click', () => selectDate(day));
+    });
+
+    // Generate time slots
+    generateTimeSlots();
+  }
+
+  // Generate Time Slots
+  function generateTimeSlots() {
+    const timeSlots = [];
+    const startHour = 8; // 8 AM
+    const endHour = 18; // 6 PM
+
+    for (let hour = startHour; hour < endHour; hour++) {
+      // Add slots every 30 minutes
+      timeSlots.push({
+        time: `${hour}:00`,
+        available: Math.random() > 0.3 // 70% chance of being available
+      });
+      timeSlots.push({
+        time: `${hour}:30`,
+        available: Math.random() > 0.3 // 70% chance of being available
+      });
+    }
+
+    let timeSlotsHTML = '';
+    timeSlots.forEach(slot => {
+      const availableClass = slot.available ? '' : 'unavailable';
+      timeSlotsHTML += `
+        <div class="time-slot ${availableClass}" data-time="${slot.time}"
+             ${!slot.available ? 'title="This slot is already booked"' : ''}>
+          ${slot.time}
+        </div>
+      `;
+    });
+
+    document.getElementById('timeSlots').innerHTML = timeSlotsHTML;
+
+    // Add event listeners to time slots
+    document.querySelectorAll('.time-slot:not(.unavailable)').forEach(slot => {
+      slot.addEventListener('click', () => selectTime(slot));
+    });
+  }
+
+  // Select Date
+  function selectDate(dayElement) {
+    // Remove previous selection
+    document.querySelectorAll('.calendar-day').forEach(day => {
+      day.classList.remove('selected');
+    });
+
+    // Add selection to clicked day
+    dayElement.classList.add('selected');
+
+    // Update booking data
+    bookingData.date = dayElement.dataset.date;
+
+    // Enable time slots
+    document.querySelectorAll('.time-slot').forEach(slot => {
+      if (!slot.classList.contains('unavailable')) {
+        slot.style.opacity = '1';
+        slot.style.pointerEvents = 'auto';
+      }
+    });
+  }
+
+  // Select Time
+  function selectTime(timeElement) {
+    // Remove previous selection
+    document.querySelectorAll('.time-slot').forEach(slot => {
+      slot.classList.remove('selected');
+    });
+
+    // Add selection to clicked time
+    timeElement.classList.add('selected');
+
+    // Update booking data
+    bookingData.time = timeElement.dataset.time;
+
+    // Show confirmation section
+    updateConfirmation();
+    confirmationSection.style.display = 'block';
+
+    // Scroll to confirmation
+    confirmationSection.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // Update Client Data
+  function updateClientData() {
+    bookingData.client = {
+      name: document.getElementById('clientName').value,
+      email: document.getElementById('clientEmail').value,
+      phone: document.getElementById('clientPhone').value,
+      address: document.getElementById('clientAddress').value,
+      vehicle: document.getElementById('clientVehicle').value,
+      notes: document.getElementById('clientNotes').value
+    };
+  }
+
+  // Generate a random booking reference
+  function generateBookingReference() {
+    const letters = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+    const numbers = '23456789';
+    let ref = 'WHEEL-';
+
+    for (let i = 0; i < 3; i++) {
+      ref += letters.charAt(Math.floor(Math.random() * letters.length));
+    }
+    for (let i = 0; i < 3; i++) {
+      ref += numbers.charAt(Math.floor(Math.random() * numbers.length));
+    }
+
+    return ref;
+  }
+
+  // Update Confirmation
+  function updateConfirmation() {
+    const date = new Date(bookingData.date);
+    const bookingRef = generateBookingReference();
+
+    // Update visible confirmation
+    document.getElementById('confirmService').textContent = bookingData.service.name;
+    document.getElementById('confirmDate').textContent = date.toLocaleDateString('en-US', {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric'
+    });
+    document.getElementById('confirmTime').textContent = bookingData.time;
+    document.getElementById('confirmVehicle').textContent = bookingData.client.vehicle;
+    document.getElementById('confirmAddress').textContent = bookingData.client.address;
+    document.getElementById('confirmTotal').textContent = `$${bookingData.service.price.toFixed(2)}`;
+
+    // Set booking reference
+    document.getElementById('formReference').value = bookingRef;
+  }
+
+  // Process booking form submission
+  async function processBooking(event) {
+    event.preventDefault();
+
+    // Validate client data
+    if (!bookingData.client.name || !bookingData.client.email || !bookingData.client.phone ||
+      !bookingData.client.vehicle || !bookingData.client.address) {
+      alert('Please complete all required fields');
+      return false;
+    }
+
+    // Validate booking data
+    if (!bookingData.service || !bookingData.date || !bookingData.time) {
+      alert('Please select a service, date, and time');
+      return false;
+    }
+
+    // Show loading state
+    const confirmBtn = document.getElementById('confirmBooking');
+    const originalText = confirmBtn.innerHTML;
+    confirmBtn.innerHTML = '<span class="spinner"></span> Processing...';
+    confirmBtn.disabled = true;
+
+    try {
+      // Generate booking reference
+      const bookingRef = generateBookingReference();
+
+      // Prepare email content
+      const emailDate = new Date(bookingData.date).toLocaleDateString('en-US', {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+      });
+
+      const emailContent = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <div style="background-color: #0066FF; color: white; padding: 20px; text-align: center;">
+            <h1 style="margin: 0;">Wheelie Booking Confirmation</h1>
+          </div>
+          <div style="padding: 20px;">
+            <p>Hello ${bookingData.client.name},</p>
+            <p>Your booking has been confirmed with the following details:</p>
+
+            <div style="background: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
+              <p><strong>Service:</strong> ${bookingData.service.name}</p>
+              <p><strong>Date & Time:</strong> ${emailDate} at ${bookingData.time}</p>
+              <p><strong>Vehicle:</strong> ${bookingData.client.vehicle}</p>
+              <p><strong>Service Address:</strong> ${bookingData.client.address}</p>
+              <p><strong>Total:</strong> $${bookingData.service.price.toFixed(2)}</p>
+              <p><strong>Booking Reference:</strong> ${bookingRef}</p>
+            </div>
+
+            <p>Our technician will arrive at your location at the scheduled time. Please ensure your vehicle is accessible.</p>
+
+            <p>If you need to make any changes, please reply to this email or call us at +32 465 856 075.</p>
+
+            <p>Thank you for choosing Wheelie!</p>
+          </div>
+          <div style="background-color: #f0f0f0; padding: 15px; text-align: center; font-size: 12px;">
+            <p>Wheelie Mobile Auto Services</p>
+            <p>Antwerp 2060, Flanders</p>
+          </div>
+        </div>
+      `;
+
+      // Send email via Brevo
+      await sendBrevoEmail({
+        sender: {
+          name: "Wheelie Auto Services",
+          email: "madjicherif23@gmail.com" // Replace with your verified sender email
+        },
+        to: [
+          {
+            email: bookingData.client.email,
+            name: bookingData.client.name
+          }
+        ],
+        cc: [
+          {
+            email: "madjicherif23@gmail.com", // Replace with your business email
+            name: "Wheelie Admin"
+          }
+        ],
+        subject: `Booking Confirmation - ${bookingRef}`,
+        htmlContent: emailContent
+      });
+
+      // Show success message
+      document.getElementById('successMessage').innerHTML = `
+        <p>Your ${bookingData.service.name} is confirmed!</p>
+        <p style="margin-top: 10px;">Reference: <strong>${bookingRef}</strong></p>
+        <p>Confirmation sent to ${bookingData.client.email}</p>
+      `;
+      successModal.style.display = 'flex';
+
+      return true;
+    } catch (error) {
+      alert('Error processing booking. Please try again.');
+      console.error('Booking error:', error);
+      return false;
+    } finally {
+      // Reset form after a delay
+      setTimeout(() => {
+        document.getElementById('clientForm').reset();
+        document.querySelectorAll('.service-card').forEach(card => {
+          card.classList.remove('selected');
+        });
+        datetimeSelection.style.display = 'none';
+        confirmationSection.style.display = 'none';
+
+        // Reset booking data
+        bookingData.service = null;
+        bookingData.date = null;
+        bookingData.time = null;
+
+        // Reset button
+        confirmBtn.innerHTML = originalText;
+        confirmBtn.disabled = false;
+      }, 3000);
+    }
+  }
+
+  async function sendBookingEmail(bookingData, bookingRef) {
+    const scriptUrl = 'https://script.google.com/macros/s/AKfycbzEZ-4ET46x6zGLjG7Vnw-sMRq9KwqCfwvdB2o1mAt7qSHxsQpYaP8I40EN1vZoHQtU/exec'; // You'll get this after creating the script
+
+    const emailDate = new Date(bookingData.date).toLocaleDateString('en-US', {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric'
+    });
+
+    const emailData = {
+      to: bookingData.client.email,
+      subject: `Booking Confirmation - ${bookingRef}`,
+      name: bookingData.client.name,
+      service: bookingData.service.name,
+      date: emailDate,
+      time: bookingData.time,
+      vehicle: bookingData.client.vehicle,
+      address: bookingData.client.address,
+      total: `$${bookingData.service.price.toFixed(2)}`,
+      reference: bookingRef
+    };
+
+    try {
+      const response = await fetch(scriptUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(emailData)
+      });
+
+      return true;
+    } catch (error) {
+      console.error('Error sending email:', error);
+      return false;
+    }
+  }
+
+  // Confirm Booking (now just submits the form)
+  function confirmBooking() {
+    clientForm.dispatchEvent(new Event('submit'));
+  }
+
+  // Initialize the booking system when the page loads
+  document.addEventListener('DOMContentLoaded', initBookingSystem);
+</script>
+</body>
+</html> i dont want to use brevo anymore, i want a different  thing for the emailing, not emailjs, not formsubmit
