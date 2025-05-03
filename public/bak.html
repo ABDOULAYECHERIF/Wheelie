@@ -1163,11 +1163,13 @@
     }
   }
 
-  const apiKey = '<%= BREVO_API_KEY %>';
-  // Add this before your API call
-console.log("Brevo Key:", process.env.BREVO_API_KEY || "MISSING");
+  console.log("Brevo Key:", process.env.BREVO_API_KEY || "MISSING");
 // Check Vercel logs or browser console
   
+
+  const apiKey = '<%= BREVO_API_KEY %>';
+  // Add this before your API call
+
 
   // Function to send email via Brevo API
   async function sendBrevoEmail(emailData) {
