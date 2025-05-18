@@ -3,33 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wheelie - The Future of Auto Care</title>
+  <title>Wheelie - AI Auto Care</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/GLTFLoader.js"></script>
   <style>
-    /* Modern Design System */
     :root {
       --primary: #0066FF;
-      --primary-dark: #0052CC;
-      --primary-light: #E6F0FF;
-      --secondary: #FF6B00;
-      --secondary-dark: #E05A00;
+      --primary-dark: #004ECC;
+      --secondary: #00FF88;
       --dark: #0A0F1A;
-      --dark-2: #1A2233;
       --light: #FFFFFF;
       --gray: #8A94A6;
-      --gray-light: #E1E6F0;
-      --success: #00C853;
-      --error: #FF3D00;
-      --glow: 0 0 30px rgba(0, 102, 255, 0.3);
-      --glow-hover: 0 0 40px rgba(0, 102, 255, 0.5);
-      --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-      --shadow-hover: 0 15px 40px rgba(0, 0, 0, 0.12);
+      --gray-light: #F5F7FA;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
       --border-radius: 16px;
-      --border-radius-sm: 8px;
+      --transition: all 0.3s cubic-bezier(0.2, 0, 0.1, 1);
+    }
+
+    [data-theme="dark"] {
+      --light: #121212;
+      --dark: #FFFFFF;
+      --gray-light: #1E1E1E;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     }
 
     * {
@@ -40,1880 +38,511 @@
     }
 
     body {
-      line-height: 1.6;
+      background: var(--light);
       color: var(--dark);
-      background-color: var(--light);
-      overflow-x: hidden;
-      scroll-behavior: smooth;
-      font-weight: 400;
-    }
-
-    h1, h2, h3, h4, h5, h6 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-weight: 700;
-      line-height: 1.2;
-    }
-
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 1440px;
+      max-width: 430px;
       margin: 0 auto;
-      padding: 0 2rem;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem 2.5rem;
-      border-radius: 50px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-      text-align: center;
-      border: none;
-      position: relative;
-      overflow: hidden;
-      z-index: 1;
-      font-size: 1rem;
-      gap: 0.5rem;
-    }
-
-    .btn-primary {
-      background-color: var(--primary);
-      color: white;
-      box-shadow: var(--glow);
-    }
-
-    .btn-primary:hover {
-      background-color: var(--primary-dark);
-      transform: translateY(-3px);
-      box-shadow: var(--glow-hover);
-    }
-
-    .btn-secondary {
-      background-color: var(--secondary);
-      color: white;
-    }
-
-    .btn-secondary:hover {
-      background-color: var(--secondary-dark);
-      transform: translateY(-3px);
-      box-shadow: 0 10px 25px -5px rgba(255, 107, 0, 0.4);
-    }
-
-    .btn-outline {
-      background-color: transparent;
-      border: 2px solid var(--primary);
-      color: var(--primary);
-    }
-
-    .btn-outline:hover {
-      background-color: var(--primary);
-      color: white;
-      transform: translateY(-3px);
-    }
-
-    section {
-      padding: 8rem 0;
+      height: 100vh;
+      overflow-x: hidden;
       position: relative;
     }
 
-    .section-title {
-      font-size: 3rem;
-      margin-bottom: 1.5rem;
-      text-align: center;
+    .app-container {
+      height: 100vh;
+      overflow-y: auto;
+      padding-bottom: 80px;
+    }
+
+    /* Status Bar */
+    .status-bar {
+      padding: 0.5rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
       color: var(--dark);
-      font-weight: 800;
-      line-height: 1.1;
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: var(--transition);
     }
 
-    .section-title.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .section-subtitle {
-      font-size: 1.25rem;
-      color: var(--gray);
-      text-align: center;
-      max-width: 700px;
-      margin: 0 auto 3rem;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: var(--transition);
-      transition-delay: 0.1s;
-    }
-
-    .section-subtitle.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* Futuristic Header */
-    header {
-      background-color: rgba(255, 255, 255, 0.98);
-      backdrop-filter: blur(20px);
-      box-shadow: 0 2px 30px rgba(0, 0, 0, 0.05);
-      position: fixed;
-      width: 100%;
-      z-index: 1000;
-      transition: all 0.3s ease;
-      border-bottom: 1px solid rgba(138, 148, 166, 0.1);
-    }
-
-    header.scrolled {
-      box-shadow: 0 4px 40px rgba(0, 0, 0, 0.1);
-    }
-
-    .navbar {
+    /* Header */
+    .app-header {
+      padding: 1rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1.5rem 0;
-      transition: all 0.3s ease;
     }
 
     .logo {
-      font-size: 2rem;
+      font-family: 'Manrope', sans-serif;
       font-weight: 800;
-      color: var(--dark);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-family: 'Space Grotesk', sans-serif;
-    }
-
-    .logo span {
-      color: var(--primary);
-    }
-
-    .logo i {
       font-size: 1.5rem;
       color: var(--primary);
     }
 
-    .nav-links {
+    .header-actions {
       display: flex;
-      list-style: none;
-      gap: 2.5rem;
+      gap: 0.75rem;
     }
 
-    .nav-links li a {
-      font-weight: 600;
-      transition: all 0.3s ease;
-      position: relative;
-      padding: 0.5rem 0;
-      color: var(--dark-2);
-    }
-
-    .nav-links li a::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-      transition: width 0.3s ease;
-    }
-
-    .nav-links li a:hover::after {
-      width: 100%;
-    }
-
-    .nav-links li a:hover {
-      color: var(--primary);
-    }
-
-    .mobile-menu-btn {
-      display: none;
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      cursor: pointer;
-      color: var(--dark);
-      z-index: 1002;
-    }
-
-    /* Next-Gen Hero Section */
-    .hero {
-      background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)),
-      url('https://images.visualelectric.com/2f701008-172a-49c5-ade0-e1efeda51f98/large');
-      background-size: contain;
-      background-position: center;
-      background-attachment: fixed;
-      color: white;
-      text-align: center;
-      padding: 15rem 0 10rem;
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--gray-light);
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 100vh;
+      color: var(--dark);
+      border: none;
+    }
+
+    /* Hero with 3D Car */
+    .hero {
+      padding: 1.5rem;
+      margin: 1rem;
+      border-radius: var(--border-radius);
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
       position: relative;
       overflow: hidden;
     }
 
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
+    #car-3d {
       width: 100%;
-      height: 100%;
-      background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.7) 100%);
-      z-index: 0;
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 1;
-      max-width: 900px;
-      margin: 0 auto;
-      opacity: 0;
-      transform: translateY(30px);
-      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .hero-content.visible {
-      opacity: 1;
-      transform: translateY(0);
+      height: 200px;
+      margin: 1rem 0;
     }
 
     .hero h1 {
-      font-size: 4.5rem;
-      margin-bottom: 1.5rem;
-      font-weight: 800;
-      line-height: 1.1;
-      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-      background: linear-gradient(90deg, #FFFFFF, #E1E6F0);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
     }
 
     .hero p {
-      font-size: 1.5rem;
-      max-width: 700px;
-      margin: 0 auto 3rem;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
       opacity: 0.9;
-      color: rgba(255, 255, 255, 0.9);
-    }
-
-    .hero-btns {
-      display: flex;
-      justify-content: center;
-      gap: 1.5rem;
-      flex-wrap: wrap;
-    }
-
-    .hero-stats {
-      display: flex;
-      justify-content: center;
-      gap: 3rem;
-      margin-top: 4rem;
-      flex-wrap: wrap;
-    }
-
-    .stat-item {
-      text-align: center;
-    }
-
-    .stat-number {
-      font-size: 3rem;
-      font-weight: 800;
-      margin-bottom: 0.5rem;
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    .stat-label {
-      font-size: 1rem;
-      color: rgba(255, 255, 255, 0.8);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .scroll-down {
-      position: absolute;
-      bottom: 2rem;
-      left: 50%;
-      transform: translateX(-50%);
-      color: white;
-      font-size: 1.5rem;
-      animation: bounce 2s infinite;
-      cursor: pointer;
-      z-index: 1;
-    }
-
-    @keyframes bounce {
-      0%, 20%, 50%, 80%, 100% {
-        transform: translateY(0) translateX(-50%);
-      }
-      40% {
-        transform: translateY(-20px) translateX(-50%);
-      }
-      60% {
-        transform: translateY(-10px) translateX(-50%);
-      }
-    }
-
-    /* 3D Steps Animation */
-    .steps-container {
-      perspective: 1000px;
-      margin: 4rem auto 0;
-      max-width: 1200px;
-    }
-
-    .steps {
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      flex-wrap: wrap;
-      transform-style: preserve-3d;
-    }
-
-    .step {
-      flex: 1;
-      min-width: 280px;
-      max-width: 360px;
-      text-align: center;
-      padding: 3rem 2rem;
-      border-radius: var(--border-radius);
-      background-color: white;
-      box-shadow: var(--shadow);
-      transition: var(--transition);
-      opacity: 0;
-      transform: translateY(30px) rotateY(15deg);
-      position: relative;
-      overflow: hidden;
-      border: 1px solid rgba(138, 148, 166, 0.1);
-    }
-
-    .step::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 5px;
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-    }
-
-    .step.visible {
-      opacity: 1;
-      transform: translateY(0) rotateY(0);
-    }
-
-    .step:nth-child(1) {
-      transition-delay: 0.1s;
-    }
-
-    .step:nth-child(2) {
-      transition-delay: 0.2s;
-    }
-
-    .step:nth-child(3) {
-      transition-delay: 0.3s;
-    }
-
-    .step:hover {
-      transform: translateY(-10px) scale(1.02);
-      box-shadow: var(--shadow-hover);
-    }
-
-    .step-icon {
-      width: 100px;
-      height: 100px;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 2rem;
-      color: white;
-      font-size: 2.5rem;
-      box-shadow: 0 15px 30px rgba(0, 102, 255, 0.2);
-      transition: var(--transition);
-    }
-
-    .step:hover .step-icon {
-      transform: rotateY(180deg);
-    }
-
-    .step h3 {
-      font-size: 1.5rem;
       margin-bottom: 1.5rem;
-      color: var(--dark);
     }
 
-    .step p {
-      color: var(--gray);
-      font-size: 1.05rem;
-      line-height: 1.7;
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--border-radius);
+      font-weight: 600;
+      border: none;
+      transition: var(--transition);
     }
 
-    /* Holographic Services */
-    .services {
-      background-color: var(--light);
-      position: relative;
-      overflow: hidden;
+    .btn-primary {
+      background: white;
+      color: var(--primary);
     }
 
-    .services::before {
-      content: '';
-      position: absolute;
-      top: -100px;
-      right: -100px;
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(circle, rgba(0, 102, 255, 0.05) 0%, transparent 70%);
-      z-index: 0;
+    .btn-outline {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: white;
     }
 
-    .services::after {
-      content: '';
-      position: absolute;
-      bottom: -100px;
-      left: -100px;
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(circle, rgba(255, 107, 0, 0.05) 0%, transparent 70%);
-      z-index: 0;
+    /* Services Grid */
+    .section-title {
+      font-size: 1.5rem;
+      margin: 1.5rem 1rem 0.5rem;
+      font-weight: 700;
     }
 
-    .service-cards {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 2rem;
-      justify-content: center;
-      position: relative;
-      z-index: 1;
+    .services-grid {
+      padding: 0 1rem;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
     }
 
     .service-card {
-      background-color: white;
+      background: var(--gray-light);
       border-radius: var(--border-radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-      width: 100%;
-      max-width: 380px;
+      padding: 1.25rem;
       transition: var(--transition);
-      opacity: 0;
-      transform: translateY(30px);
-      border: 1px solid rgba(138, 148, 166, 0.1);
-    }
-
-    .service-card.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .service-card:nth-child(1) {
-      transition-delay: 0.1s;
-    }
-
-    .service-card:nth-child(2) {
-      transition-delay: 0.2s;
-    }
-
-    .service-card:nth-child(3) {
-      transition-delay: 0.3s;
     }
 
     .service-card:hover {
-      transform: translateY(-10px);
-      box-shadow: var(--shadow-hover);
-    }
-
-    .service-img {
-      height: 220px;
-      background-size: cover;
-      background-position: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .service-img::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.3));
-    }
-
-    .service-content {
-      padding: 2.5rem;
-    }
-
-    .service-content h3 {
-      font-size: 1.75rem;
-      margin-bottom: 1.5rem;
-      color: var(--dark);
-      font-weight: 700;
-    }
-
-    .service-content ul {
-      list-style: none;
-      margin-bottom: 2rem;
-    }
-
-    .service-content li {
-      margin-bottom: 1rem;
-      position: relative;
-      padding-left: 1.75rem;
-      color: var(--gray);
-      line-height: 1.6;
-    }
-
-    .service-content li::before {
-      content: '✓';
-      position: absolute;
-      left: 0;
-      color: var(--success);
-      font-weight: bold;
-    }
-
-    .price {
-      font-size: 2rem;
-      font-weight: 800;
-      color: var(--secondary);
-      margin: 2rem 0;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .price span {
-      font-size: 1rem;
-      font-weight: 500;
-      color: var(--gray);
-    }
-
-    /* Augmented Reality CTA */
-    .technician-cta {
-      background: linear-gradient(135deg, rgba(0, 102, 255, 0.9), rgba(255, 107, 0, 0.9)),
-      url('https://images.unsplash.com/photo-1600679472829-3044539ce8ed?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      color: white;
-      text-align: center;
-      padding: 8rem 2rem;
-      border-radius: var(--border-radius);
-      margin: 6rem auto;
-      max-width: 1400px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: var(--shadow-hover);
-    }
-
-    .technician-cta::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, rgba(0, 102, 255, 0.8), rgba(255, 107, 0, 0.8));
-      z-index: 0;
-    }
-
-    .technician-cta-content {
-      position: relative;
-      z-index: 1;
-      max-width: 800px;
-      margin: 0 auto;
-      opacity: 0;
-      transform: translateY(30px);
-      transition: var(--transition);
-    }
-
-    .technician-cta-content.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .technician-cta h2 {
-      font-size: 3rem;
-      margin-bottom: 1.5rem;
-      font-weight: 800;
-      line-height: 1.1;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    }
-
-    .technician-cta p {
-      font-size: 1.5rem;
-      max-width: 700px;
-      margin: 0 auto 3rem;
-      opacity: 0.9;
-      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .benefits {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1.5rem;
-      margin: 3rem 0;
-    }
-
-    .benefit {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      background-color: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(10px);
-      padding: 1rem 2rem;
-      border-radius: 50px;
-      font-weight: 600;
-      transition: var(--transition);
-    }
-
-    .benefit:hover {
-      transform: translateY(-3px);
-      background-color: rgba(255, 255, 255, 0.25);
-    }
-
-    .benefit i {
-      color: white;
-      font-size: 1.25rem;
-    }
-
-    /* AI-Powered Testimonials */
-    .testimonials {
-      text-align: center;
-      position: relative;
-      background-color: #F8FAFF;
-    }
-
-    .testimonials::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgwLDEwMiwyNTUsMC4wMykiPjwvcmVjdD48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjcGF0dGVybikiPjwvcmVjdD48L3N2Zz4=');
-      opacity: 0.5;
-      z-index: 0;
-    }
-
-    .testimonial-cards {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 2rem;
-      justify-content: center;
-      margin-top: 4rem;
-      position: relative;
-      z-index: 1;
-    }
-
-    .testimonial-card {
-      background-color: white;
-      border-radius: var(--border-radius);
-      padding: 3rem;
+      transform: translateY(-5px);
       box-shadow: var(--shadow);
-      width: 100%;
-      max-width: 380px;
-      position: relative;
-      text-align: left;
-      transition: var(--transition);
-      opacity: 0;
-      transform: translateY(30px);
-      border: 1px solid rgba(138, 148, 166, 0.1);
     }
 
-    .testimonial-card.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .testimonial-card:nth-child(1) {
-      transition-delay: 0.1s;
-    }
-
-    .testimonial-card:nth-child(2) {
-      transition-delay: 0.2s;
-    }
-
-    .testimonial-card:nth-child(3) {
-      transition-delay: 0.3s;
-    }
-
-    .testimonial-card:hover {
-      transform: translateY(-10px);
-      box-shadow: var(--shadow-hover);
-    }
-
-    .testimonial-card::before {
-      content: '"';
-      font-size: 6rem;
-      color: rgba(0, 102, 255, 0.05);
-      position: absolute;
-      top: 0.5rem;
-      left: 1rem;
-      line-height: 1;
-      font-family: Georgia, serif;
-      z-index: 0;
-    }
-
-    .testimonial-text {
-      font-style: italic;
-      margin-bottom: 2rem;
-      position: relative;
-      z-index: 1;
-      color: var(--dark);
-      font-size: 1.1rem;
-      line-height: 1.7;
-    }
-
-    .testimonial-author {
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-    }
-
-    .author-img {
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      background-size: cover;
-      background-position: center;
-      flex-shrink: 0;
-      border: 3px solid var(--primary);
-      box-shadow: 0 5px 15px rgba(0, 102, 255, 0.2);
-    }
-
-    .author-info h4 {
-      font-size: 1.25rem;
-      margin-bottom: 0.25rem;
-      color: var(--dark);
-    }
-
-    .author-info p {
-      color: var(--gray);
-      font-size: 0.95rem;
-    }
-
-    .rating {
-      color: var(--secondary);
-      margin-top: 0.5rem;
-      font-size: 1rem;
-    }
-
-    /* Neural Network Waitlist */
-    .waitlist {
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      color: white;
-      text-align: center;
-      padding: 8rem 2rem;
-      border-radius: var(--border-radius);
-      margin: 6rem auto;
-      max-width: 1400px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: var(--shadow-hover);
-    }
-
-    .waitlist::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-      animation: rotate 20s linear infinite;
-      z-index: 0;
-    }
-
-    @keyframes rotate {
-      0% {
-        transform: rotate(0deg);
-      }
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-
-    .waitlist-content {
-      position: relative;
-      z-index: 1;
-      max-width: 800px;
-      margin: 0 auto;
-      opacity: 0;
-      transform: translateY(30px);
-      transition: var(--transition);
-    }
-
-    .waitlist-content.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .waitlist h2 {
-      font-size: 3rem;
-      margin-bottom: 1.5rem;
-      font-weight: 800;
-      line-height: 1.1;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    }
-
-    .waitlist p {
-      font-size: 1.5rem;
-      max-width: 700px;
-      margin: 0 auto 3rem;
-      opacity: 0.9;
-      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .waitlist-form {
-      max-width: 700px;
-      margin: 0 auto;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      justify-content: center;
-    }
-
-    .waitlist-form input {
-      flex: 1;
-      min-width: 250px;
-      padding: 1.25rem 2rem;
-      border-radius: 50px;
-      border: none;
-      font-size: 1rem;
-      background-color: rgba(255, 255, 255, 0.9);
-      transition: var(--transition);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-    }
-
-    .waitlist-form input:focus {
-      outline: none;
-      background-color: white;
-      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
-    }
-
-    .waitlist-form button {
-      padding: 1.25rem 3rem;
-    }
-
-    .waitlist-stats {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 2rem;
-      margin-top: 3rem;
-      font-size: 1rem;
-      opacity: 0.9;
-      flex-wrap: wrap;
-    }
-
-    .waitlist-stats i {
-      margin-right: 0.5rem;
-    }
-
-    /* Quantum Footer */
-    footer {
-      background-color: var(--dark);
-      color: white;
-      padding: 8rem 0 3rem;
-      position: relative;
-    }
-
-    footer::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--primary), transparent);
-    }
-
-    .footer-content {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4rem;
-      margin-bottom: 5rem;
-    }
-
-    .footer-column {
-      flex: 1;
-      min-width: 220px;
-    }
-
-    .footer-column h3 {
-      font-size: 1.5rem;
-      margin-bottom: 2rem;
-      color: white;
-      font-weight: 700;
-      position: relative;
-      padding-bottom: 1rem;
-    }
-
-    .footer-column h3::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 50px;
-      height: 3px;
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-      border-radius: 3px;
-    }
-
-    .footer-column ul {
-      list-style: none;
-    }
-
-    .footer-column li {
-      margin-bottom: 1rem;
-    }
-
-    .footer-column a {
-      color: #94a3b8;
-      transition: var(--transition);
-      display: inline-block;
-      padding: 0.25rem 0;
-    }
-
-    .footer-column a:hover {
-      color: white;
-      transform: translateX(5px);
-    }
-
-    .footer-about p {
-      color: #94a3b8;
-      margin-bottom: 2rem;
-      line-height: 1.7;
-    }
-
-    .social-links {
-      display: flex;
-      gap: 1rem;
-      margin-top: 2rem;
-    }
-
-    .social-links a {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
+    .service-icon {
       width: 50px;
       height: 50px;
-      background-color: rgba(255, 255, 255, 0.05);
-      border-radius: 50%;
-      color: white;
-      transition: var(--transition);
-      font-size: 1.25rem;
-    }
-
-    .social-links a:hover {
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      transform: translateY(-5px);
-    }
-
-    .newsletter-form {
+      background: var(--primary-light);
+      border-radius: 12px;
       display: flex;
-      margin-top: 2rem;
-      border-radius: 50px;
-      overflow: hidden;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .newsletter-form input {
-      flex: 1;
-      padding: 1rem 1.5rem;
-      border: none;
-      font-size: 1rem;
-    }
-
-    .newsletter-form button {
-      padding: 0 1.5rem;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: white;
-      border: none;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .newsletter-form button:hover {
-      opacity: 0.9;
-    }
-
-    .copyright {
-      text-align: center;
-      padding-top: 3rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      color: #94a3b8;
-      font-size: 1rem;
-    }
-
-    /* Holographic Mobile Menu */
-    .mobile-menu {
-      position: fixed;
-      top: 0;
-      left: -100%;
-      width: 85%;
-      max-width: 400px;
-      height: 100vh;
-      background-color: rgba(255, 255, 255, 0.98);
-      backdrop-filter: blur(20px);
-      box-shadow: 2px 0 30px rgba(0, 0, 0, 0.1);
-      z-index: 1001;
-      transition: var(--transition);
-      padding: 3rem 2rem;
-      display: flex;
-      flex-direction: column;
-      border-right: 1px solid rgba(138, 148, 166, 0.1);
-    }
-
-    .mobile-menu.active {
-      left: 0;
-    }
-
-    .mobile-menu-header {
-      display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-bottom: 3rem;
-      padding-bottom: 1.5rem;
+      justify-content: center;
+      color: var(--primary);
+      margin-bottom: 0.75rem;
+    }
+
+    .service-card h3 {
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .service-card p {
+      font-size: 0.8rem;
+      color: var(--gray);
+    }
+
+    /* AI Chatbot */
+    .ai-chatbot {
+      margin: 1.5rem;
+      padding: 1.5rem;
+      background: var(--gray-light);
+      border-radius: var(--border-radius);
+    }
+
+    .ai-chatbot h2 {
+      margin-bottom: 1rem;
+    }
+
+    #chat-messages {
+      height: 150px;
+      overflow-y: auto;
+      margin-bottom: 1rem;
       border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     }
 
-    .mobile-menu-links {
-      list-style: none;
+    .message {
+      margin-bottom: 0.75rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: 12px;
+      max-width: 80%;
+    }
+
+    .ai-message {
+      background: var(--primary-light);
+      color: var(--primary);
+      align-self: flex-start;
+    }
+
+    .user-message {
+      background: var(--primary);
+      color: white;
+      margin-left: auto;
+    }
+
+    #chat-input {
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: 12px;
+      border: 1px solid var(--gray-light);
+      margin-bottom: 0.5rem;
+    }
+
+    /* Vehicle Health */
+    .health-dashboard {
+      margin: 1.5rem;
+      padding: 1.5rem;
+      background: var(--gray-light);
+      border-radius: var(--border-radius);
+    }
+
+    .health-metrics {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .metric {
       flex: 1;
+      text-align: center;
+      padding: 1rem;
+      background: rgba(0, 102, 255, 0.1);
+      border-radius: 12px;
+    }
+
+    .metric-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    /* Bottom Nav */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--light);
+      display: flex;
+      justify-content: space-around;
+      padding: 0.75rem 0;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 100;
+    }
+
+    .nav-item {
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
+      align-items: center;
+      color: var(--gray);
+      font-size: 0.7rem;
     }
 
-    .mobile-menu-links li a {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: var(--dark);
-      padding: 1rem 1.5rem;
-      border-radius: var(--border-radius-sm);
-      transition: var(--transition);
-      display: block;
-      border: 1px solid rgba(138, 148, 166, 0.1);
-    }
-
-    .mobile-menu-links li a:hover {
-      background-color: var(--primary-light);
+    .nav-item.active {
       color: var(--primary);
-      transform: translateX(5px);
     }
 
-    .mobile-menu-footer {
-      padding-top: 2rem;
-      border-top: 1px solid rgba(0, 0, 0, 0.1);
+    .nav-icon {
+      font-size: 1.25rem;
+      margin-bottom: 0.25rem;
     }
 
-    .close-menu-btn {
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      cursor: pointer;
-      color: var(--dark);
-      transition: var(--transition);
-    }
-
-    .close-menu-btn:hover {
-      transform: rotate(90deg);
-    }
-
-    .overlay {
+    /* Floating Action Button */
+    .fab {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.7);
-      z-index: 1000;
-      opacity: 0;
-      pointer-events: none;
-      transition: var(--transition);
-      backdrop-filter: blur(10px);
-    }
-
-    .overlay.active {
-      opacity: 1;
-      pointer-events: all;
-    }
-
-    /* Responsive Styles for Future Devices */
-    @media (max-width: 1440px) {
-      .section-title {
-        font-size: 2.75rem;
-      }
-
-      .hero h1 {
-        font-size: 4rem;
-      }
-    }
-
-    @media (max-width: 1200px) {
-      .section-title {
-        font-size: 2.5rem;
-      }
-
-      .hero h1 {
-        font-size: 3.5rem;
-      }
-
-      .technician-cta h2, .waitlist h2 {
-        font-size: 2.5rem;
-      }
-    }
-
-    @media (max-width: 992px) {
-      .nav-links {
-        gap: 1.5rem;
-      }
-
-      .hero {
-        padding: 12rem 0 8rem;
-      }
-
-      section {
-        padding: 6rem 0;
-      }
-
-      .footer-content {
-        gap: 3rem;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .nav-links {
-        display: none;
-      }
-
-      .mobile-menu-btn {
-        display: block;
-      }
-
-      .hero {
-        padding: 10rem 0 6rem;
-        background-attachment: scroll;
-      }
-
-      .hero h1 {
-        font-size: 2.75rem;
-      }
-
-      .hero p {
-        font-size: 1.25rem;
-      }
-
-      .hero-btns {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .btn {
-        width: 100%;
-        max-width: 300px;
-      }
-
-      .section-title {
-        font-size: 2.25rem;
-      }
-
-      .section-subtitle {
-        font-size: 1.1rem;
-      }
-
-      .technician-cta, .waitlist {
-        margin: 4rem auto;
-        padding: 6rem 1.5rem;
-      }
-
-      .technician-cta h2, .waitlist h2 {
-        font-size: 2.25rem;
-      }
-
-      .technician-cta p, .waitlist p {
-        font-size: 1.25rem;
-      }
-
-      .stat-number {
-        font-size: 2.5rem;
-      }
-    }
-
-    @media (max-width: 576px) {
-      .container {
-        padding: 0 1.5rem;
-      }
-
-      .hero {
-        padding: 8rem 0 4rem;
-      }
-
-      .hero h1 {
-        font-size: 2.25rem;
-      }
-
-      .section-title {
-        font-size: 2rem;
-      }
-
-      .hero-stats {
-        gap: 2rem;
-      }
-
-      .step, .service-card, .testimonial-card {
-        min-width: 100%;
-        max-width: 100%;
-      }
-
-      .waitlist-form {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .waitlist-form input, .waitlist-form button {
-        width: 100%;
-      }
-
-      .footer-column {
-        min-width: 100%;
-      }
-
-      .newsletter-form {
-        flex-direction: column;
-        border-radius: var(--border-radius-sm);
-      }
-
-      .newsletter-form input, .newsletter-form button {
-        border-radius: var(--border-radius-sm);
-        width: 100%;
-      }
-
-      .newsletter-form input {
-        margin-bottom: 0.5rem;
-      }
-
-      .mobile-menu {
-        width: 90%;
-        padding: 2rem 1.5rem;
-      }
-    }
-
-    /* Futuristic Animations */
-    @keyframes float {
-      0%, 100% {
-        transform: translateY(0);
-      }
-      50% {
-        transform: translateY(-15px);
-      }
-    }
-
-    .floating {
-      animation: float 6s ease-in-out infinite;
-    }
-
-    .delay-1 {
-      animation-delay: 0.5s;
-    }
-
-    .delay-2 {
-      animation-delay: 1s;
-    }
-
-    /* Particle Background Effect */
-    .particles {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      overflow: hidden;
-    }
-
-    .particle {
-      position: absolute;
-      background: rgba(255, 255, 255, 0.5);
+      bottom: 80px;
+      right: 20px;
+      width: 60px;
+      height: 60px;
+      background: var(--primary);
+      color: white;
       border-radius: 50%;
-      animation: float-particle 15s infinite linear;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(0, 102, 255, 0.3);
+      z-index: 10;
+      border: none;
     }
 
-    @keyframes float-particle {
-      0% {
-        transform: translateY(0) translateX(0);
-        opacity: 0;
-      }
-      10% {
-        opacity: 1;
-      }
-      90% {
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(-100vh) translateX(100px);
-        opacity: 0;
-      }
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Holographic Scrollbar */
-    ::-webkit-scrollbar {
-      width: 10px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: var(--light);
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: linear-gradient(var(--primary), var(--secondary));
-      border-radius: 5px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background: linear-gradient(var(--primary-dark), var(--secondary-dark));
+    .fade-in {
+      animation: fadeIn 0.5s ease-out forwards;
     }
   </style>
 </head>
-<body>
-<!-- Particle Background -->
-<div class="particles" id="particles"></div>
+<body data-theme="light">
+<div class="app-container">
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span>9:41</span>
+    <span>
+        <i class="fas fa-signal"></i>
+        <i class="fas fa-wifi"></i>
+        <i class="fas fa-battery-three-quarters"></i>
+      </span>
+  </div>
 
-<!-- Header -->
-<header id="header">
-  <div class="container">
-    <nav class="navbar">
-      <a href="#" class="logo">
-        <i class="fas fa-car-crash"></i>
-        WHEELIE
-      </a>
-      <ul class="nav-links">
-        <li><a href="#services">Services</a></li>
-        <li><a href="#how-it-works">Technology</a></li>
-        <li><a href="#technicians">For Pros</a></li>
-        <li><a href="#testimonials">Testimonials</a></li>
-        <li><a href="#waitlist" class="btn btn-outline">Early Access</a></li>
-      </ul>
-      <button class="mobile-menu-btn" id="mobileMenuBtn">
-        <i class="fas fa-bars"></i>
+  <!-- App Header -->
+  <div class="app-header">
+    <div class="logo">WHEELIE</div>
+    <div class="header-actions">
+      <button class="icon-btn" id="theme-toggle">
+        <i class="fas fa-moon"></i>
       </button>
-    </nav>
+      <button class="icon-btn">
+        <i class="fas fa-bell"></i>
+      </button>
+    </div>
   </div>
-</header>
 
-<!-- Holographic Mobile Menu -->
-<div class="mobile-menu" id="mobileMenu">
-  <div class="mobile-menu-header">
-    <a href="#" class="logo">
-      <i class="fas fa-car-crash"></i>
-      WHEELIE
-    </a>
-    <button class="close-menu-btn" id="closeMenuBtn">
-      <i class="fas fa-times"></i>
-    </button>
+  <!-- Hero with 3D Car -->
+  <div class="hero fade-in">
+    <h1>Your Car, Smarter</h1>
+    <p>AI-powered diagnostics & mobile service</p>
+    <div id="car-3d"></div>
+    <div class="hero-btns">
+      <button class="btn btn-primary" id="book-now">Book Service</button>
+      <button class="btn btn-outline">Learn More</button>
+    </div>
   </div>
-  <ul class="mobile-menu-links">
-    <li><a href="#services">Services</a></li>
-    <li><a href="#how-it-works">Technology</a></li>
-    <li><a href="#technicians">For Pros</a></li>
-    <li><a href="#testimonials">Testimonials</a></li>
-  </ul>
-  <div class="mobile-menu-footer">
-    <a href="#waitlist" class="btn btn-primary" style="width: 100%;">Early Access</a>
+
+  <!-- Services Grid -->
+  <h2 class="section-title fade-in">Services</h2>
+  <div class="services-grid">
+    <div class="service-card fade-in delay-1">
+      <div class="service-icon">
+        <i class="fas fa-car-battery"></i>
+      </div>
+      <h3>AI Diagnostics</h3>
+      <p>Full vehicle health report</p>
+    </div>
+    <div class="service-card fade-in delay-2">
+      <div class="service-icon">
+        <i class="fas fa-spray-can"></i>
+      </div>
+      <h3>Detailing</h3>
+      <p>Premium cleaning</p>
+    </div>
+    <div class="service-card fade-in delay-1">
+      <div class="service-icon">
+        <i class="fas fa-oil-can"></i>
+      </div>
+      <h3>Oil Change</h3>
+      <p>Synthetic & conventional</p>
+    </div>
+    <div class="service-card fade-in delay-2">
+      <div class="service-icon">
+        <i class="fas fa-tire"></i>
+      </div>
+      <h3>Tire Service</h3>
+      <p>Rotation & repair</p>
+    </div>
+  </div>
+
+  <!-- AI Chatbot -->
+  <div class="ai-chatbot fade-in delay-3">
+    <h2>AI Mechanic Assistant</h2>
+    <div id="chat-messages">
+      <div class="message ai-message">Hi! How can I help with your car today?</div>
+    </div>
+    <input type="text" id="chat-input" placeholder="Ask about your car...">
+    <button class="btn btn-primary" id="send-message">Send</button>
+  </div>
+
+  <!-- Vehicle Health Dashboard -->
+  <div class="health-dashboard fade-in delay-3">
+    <h2>Vehicle Health</h2>
+    <p>Your car is in <strong>excellent</strong> condition</p>
+    <div class="health-metrics">
+      <div class="metric">
+        <div class="metric-value">98%</div>
+        <div>Engine</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value">95%</div>
+        <div>Battery</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value">100%</div>
+        <div>Tires</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Action Button -->
+  <button class="fab" id="quick-book">
+    <i class="fas fa-plus"></i>
+  </button>
+
+  <!-- Bottom Navigation -->
+  <div class="bottom-nav">
+    <div class="nav-item active">
+      <div class="nav-icon">
+        <i class="fas fa-home"></i>
+      </div>
+      <span>Home</span>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon">
+        <i class="fas fa-calendar-alt"></i>
+      </div>
+      <span>Bookings</span>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon">
+        <i class="fas fa-car"></i>
+      </div>
+      <span>Garage</span>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon">
+        <i class="fas fa-cog"></i>
+      </div>
+      <span>Settings</span>
+    </div>
   </div>
 </div>
-<div class="overlay" id="overlay"></div>
-
-<!-- Hero Section -->
-<section class="hero" id="home">
-  <div class="container">
-    <div class="hero-content">
-      <h1>REINVENTING AUTO CARE WITH AI & ROBOTICS</h1>
-      <p>The future of vehicle maintenance is here. Our autonomous mobile units and certified technicians deliver premium service wherever you are.</p>
-      <div class="hero-btns">
-        <a href="bak.html" class="btn btn-primary">
-          <i class="fas fa-calendar-alt"></i> Schedule Service
-        </a>
-        <a href="#technicians" class="btn btn-outline">
-          <i class="fas fa-robot"></i> Meet Our Tech
-        </a>
-      </div>
-
-      <div class="hero-stats">
-        <div class="stat-item">
-          <div class="stat-number">15,000+</div>
-          <div class="stat-label">Vehicles Serviced</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-number">98.7%</div>
-          <div class="stat-label">Satisfaction Rate</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-number">47</div>
-          <div class="stat-label">Cities Worldwide</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <a href="#how-it-works" class="scroll-down">
-    <i class="fas fa-chevron-down floating"></i>
-  </a>
-</section>
-
-<!-- How It Works -->
-<section id="how-it-works">
-  <div class="container">
-    <h2 class="section-title">OUR CUTTING-EDGE TECHNOLOGY</h2>
-    <p class="section-subtitle">Combining artificial intelligence, robotics, and human expertise for unparalleled auto care</p>
-
-    <div class="steps-container">
-      <div class="steps">
-        <div class="step">
-          <div class="step-icon">
-            <i class="fas fa-brain"></i>
-          </div>
-          <h3>AI Diagnostics</h3>
-          <p>Our proprietary AI scans your vehicle with millimeter precision, identifying issues before they become problems.</p>
-        </div>
-        <div class="step">
-          <div class="step-icon">
-            <i class="fas fa-robot"></i>
-          </div>
-          <h3>Robotic Assistance</h3>
-          <p>Automated mobile units handle basic services while our technicians focus on complex repairs.</p>
-        </div>
-        <div class="step">
-          <div class="step-icon">
-            <i class="fas fa-bolt"></i>
-          </div>
-          <h3>Instant Updates</h3>
-          <p>Real-time progress tracking and predictive maintenance alerts through our mobile app.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Services -->
-<section class="services" id="services">
-  <div class="container">
-    <h2 class="section-title">PREMIUM SERVICES</h2>
-    <p class="section-subtitle">From routine maintenance to complete overhauls, we bring the service center to you</p>
-
-    <div class="service-cards">
-      <div class="service-card">
-        <div class="service-img" style="background-image: url('https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');"></div>
-        <div class="service-content">
-          <h3>Quantum Wash Pro</h3>
-          <ul>
-            <li>Nanotech waterless cleaning</li>
-            <li>Ceramic coating application</li>
-            <li>Interior ozone treatment</li>
-            <li>Self-healing paint protection</li>
-            <li>UV-resistant sealant</li>
-          </ul>
-          <div class="price">
-            $129 <span>starting at</span>
-          </div>
-          <a href="#waitlist" class="btn btn-primary">Reserve Now</a>
-        </div>
-      </div>
-
-      <div class="service-card">
-        <div class="service-img" style="background-image: url('https://images.unsplash.com/photo-1607860108855-64acf2078ed9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');"></div>
-        <div class="service-content">
-          <h3>AI-Assisted Repairs</h3>
-          <ul>
-            <li>Predictive maintenance</li>
-            <li>Augmented reality diagnostics</li>
-            <li>Electric vehicle specialists</li>
-            <li>3D printed parts on-demand</li>
-            <li>Blockchain service records</li>
-          </ul>
-          <div class="price">
-            $99 <span>diagnostic fee</span>
-          </div>
-          <a href="#waitlist" class="btn btn-primary">Reserve Now</a>
-        </div>
-      </div>
-
-      <div class="service-card">
-        <div class="service-img" style="background-image: url('https://images.unsplash.com/photo-1493238792000-8113da705763?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');"></div>
-        <div class="service-content">
-          <h3>Autonomous Valet</h3>
-          <ul>
-            <li>Self-driving pickup/delivery</li>
-            <li>Biometric vehicle access</li>
-            <li>Real-time tracking</li>
-            <li>Climate pre-conditioning</li>
-            <li>Included detailing</li>
-          </ul>
-          <div class="price">
-            $49 <span>per service</span>
-          </div>
-          <a href="#waitlist" class="btn btn-primary">Reserve Now</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Technician CTA -->
-<section class="technician-cta" id="technicians">
-  <div class="container">
-    <div class="technician-cta-content">
-      <h2>TECHNICIANS EARN $120K+/YEAR</h2>
-      <p>Join our elite network of certified technicians equipped with augmented reality tools and AI assistants.</p>
-
-      <div class="benefits">
-        <div class="benefit">
-          <i class="fas fa-money-bill-wave"></i>
-          <span>90% of earnings</span>
-        </div>
-        <div class="benefit">
-          <i class="fas fa-clock"></i>
-          <span>Flexible schedule</span>
-        </div>
-        <div class="benefit">
-          <i class="fas fa-robot"></i>
-          <span>AI assistant</span>
-        </div>
-        <div class="benefit">
-          <i class="fas fa-gem"></i>
-          <span>Premium clients</span>
-        </div>
-      </div>
-
-      <a href="technician.html" class="btn btn-secondary">
-        <i class="fas fa-user-shield"></i> Apply Now
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- Testimonials -->
-<section class="testimonials" id="testimonials">
-  <div class="container">
-    <h2 class="section-title">TRUSTED BY INDUSTRY LEADERS</h2>
-    <p class="section-subtitle">What Fortune 500 executives and tech innovators say about our service</p>
-
-    <div class="testimonial-cards">
-      <div class="testimonial-card">
-        <p class="testimonial-text">As a Tesla owner, I'm used to cutting-edge service. Wheelie's mobile diagnostics found an issue my local service center missed. Their autonomous detailing van left my Model S looking better than factory delivery.</p>
-        <div class="testimonial-author">
-          <div class="author-img" style="background-image: url('https://randomuser.me/api/portraits/women/65.jpg');"></div>
-          <div class="author-info">
-            <h4>Jessica Chen</h4>
-            <p>CTO, Quantum Computing Inc.</p>
-            <div class="rating">
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="testimonial-card">
-        <p class="testimonial-text">Our corporate fleet management costs dropped 37% after switching to Wheelie's predictive maintenance platform. Their AI anticipates issues before they occur, saving us thousands in downtime.</p>
-        <div class="testimonial-author">
-          <div class="author-img" style="background-image: url('https://randomuser.me/api/portraits/men/75.jpg');"></div>
-          <div class="author-info">
-            <h4>Marcus Johnson</h4>
-            <p>Director of Operations, Amazon</p>
-            <div class="rating">
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="testimonial-card">
-        <p class="testimonial-text">After 20 years as a dealership technician, I was skeptical. Wheelie's AR tools and AI diagnostics make me twice as efficient. I earn more working less, with better client satisfaction scores.</p>
-        <div class="testimonial-author">
-          <div class="author-img" style="background-image: url('https://randomuser.me/api/portraits/men/82.jpg');"></div>
-          <div class="author-info">
-            <h4>Carlos Mendez</h4>
-            <p>Master Technician</p>
-            <div class="rating">
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star-half-alt"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Waitlist -->
-<section class="waitlist" id="waitlist">
-  <div class="container">
-    <div class="waitlist-content">
-      <h2>JOIN THE AUTOMOTIVE REVOLUTION</h2>
-      <p>Be among the first to experience Wheelie's next-generation auto care when we launch in your city.</p>
-
-      <form class="waitlist-form" id="waitlistForm">
-        <input type="text" placeholder="Your Name" required>
-        <input type="email" placeholder="Email Address" required>
-        <input type="text" placeholder="ZIP Code" required>
-        <button type="submit" class="btn btn-secondary">Get Early Access</button>
-      </form>
-
-      <div class="waitlist-stats">
-          <span>
-            <i class="fas fa-users"></i> 25,000+ on waitlist
-          </span>
-        <span>
-            <i class="fas fa-map-marker-alt"></i> 12 new cities coming 2025
-          </span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Footer -->
-<footer>
-  <div class="container">
-    <div class="footer-content">
-      <div class="footer-column footer-about">
-        <h3>WHEELIE</h3>
-        <p>Redefining auto care through artificial intelligence, robotics, and exceptional human service. The future of vehicle maintenance is here.</p>
-        <div class="social-links">
-          <a href="#"><i class="fab fa-twitter"></i></a>
-          <a href="#"><i class="fab fa-linkedin-in"></i></a>
-          <a href="#"><i class="fab fa-instagram"></i></a>
-          <a href="#"><i class="fab fa-youtube"></i></a>
-        </div>
-      </div>
-
-      <div class="footer-column">
-        <h3>Services</h3>
-        <ul>
-          <li><a href="#">AI Diagnostics</a></li>
-          <li><a href="#">Robotic Detailing</a></li>
-          <li><a href="#">Predictive Maintenance</a></li>
-          <li><a href="#">Autonomous Valet</a></li>
-          <li><a href="#">Fleet Solutions</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-column">
-        <h3>Company</h3>
-        <ul>
-          <li><a href="#">About Us</a></li>
-          <li><a href="#">Careers</a></li>
-          <li><a href="#">Technology</a></li>
-          <li><a href="#">Press</a></li>
-          <li><a href="#">Investors</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-column">
-        <h3>Resources</h3>
-        <ul>
-          <li><a href="#">Blog</a></li>
-          <li><a href="#">Research</a></li>
-          <li><a href="#">Sustainability</a></li>
-          <li><a href="#">API Docs</a></li>
-          <li><a href="#">Help Center</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-column">
-        <h3>Newsletter</h3>
-        <p>Subscribe for tech updates and service expansions.</p>
-        <form class="newsletter-form">
-          <input type="email" placeholder="Your Email">
-          <button type="submit"><i class="fas fa-paper-plane"></i></button>
-        </form>
-      </div>
-    </div>
-
-    <div class="copyright">
-      <p>&copy; 2025 Wheelie Technologies Inc. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
-    </div>
-  </div>
-</footer>
 
 <script>
-  // Particle Background
-  function createParticles() {
-    const particlesContainer = document.getElementById('particles');
-    const particleCount = 30;
+  // 3D Car Model (Simplified Three.js)
+  let scene, camera, renderer, car;
+  function init3D() {
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+    renderer = new THREE.WebGLRenderer({ alpha: true });
+    renderer.setSize(300, 200);
+    document.getElementById('car-3d').appendChild(renderer.domElement);
 
-    for (let i = 0; i < particleCount; i++) {
-      const particle = document.createElement('div');
-      particle.classList.add('particle');
+    // Add lights
+    const light = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(light);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    directionalLight.position.set(0, 1, 1);
+    scene.add(directionalLight);
 
-      // Random size between 1px and 3px
-      const size = Math.random() * 2 + 1;
-      particle.style.width = `${size}px`;
-      particle.style.height = `${size}px`;
+    // Basic car model (cube for demo)
+    const geometry = new THREE.BoxGeometry(1, 0.5, 2);
+    const material = new THREE.MeshPhongMaterial({
+      color: 0x0066ff,
+      shininess: 100
+    });
+    car = new THREE.Mesh(geometry, material);
+    scene.add(car);
 
-      // Random position
-      particle.style.left = `${Math.random() * 100}%`;
-      particle.style.top = `${Math.random() * 100}%`;
+    camera.position.z = 3;
 
-      // Random animation duration and delay
-      const duration = Math.random() * 10 + 10;
-      const delay = Math.random() * 5;
-      particle.style.animation = `float-particle ${duration}s ${delay}s infinite linear`;
-
-      particlesContainer.appendChild(particle);
+    // Animation loop
+    function animate() {
+      requestAnimationFrame(animate);
+      car.rotation.y += 0.01;
+      renderer.render(scene, camera);
     }
+    animate();
   }
 
-  // Mobile Menu Toggle
-  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-  const closeMenuBtn = document.getElementById('closeMenuBtn');
-  const mobileMenu = document.getElementById('mobileMenu');
-  const overlay = document.getElementById('overlay');
-
-  mobileMenuBtn.addEventListener('click', () => {
-    mobileMenu.classList.add('active');
-    overlay.classList.add('active');
-    document.body.style.overflow = 'hidden';
+  // Dark/Light Mode Toggle
+  document.getElementById('theme-toggle').addEventListener('click', () => {
+    const body = document.body;
+    const isDark = body.getAttribute('data-theme') === 'dark';
+    body.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    document.getElementById('theme-toggle').innerHTML =
+      isDark ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
   });
 
-  closeMenuBtn.addEventListener('click', () => {
-    mobileMenu.classList.remove('active');
-    overlay.classList.remove('active');
-    document.body.style.overflow = '';
-  });
+  // AI Chatbot
+  document.getElementById('send-message').addEventListener('click', () => {
+    const input = document.getElementById('chat-input');
+    const message = input.value.trim();
+    if (message) {
+      addMessage(message, 'user');
+      input.value = '';
 
-  overlay.addEventListener('click', () => {
-    mobileMenu.classList.remove('active');
-    overlay.classList.remove('active');
-    document.body.style.overflow = '';
-  });
-
-  // Header scroll effect
-  const header = document.getElementById('header');
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 50) {
-      header.classList.add('scrolled');
-    } else {
-      header.classList.remove('scrolled');
+      // Simulate AI response
+      setTimeout(() => {
+        const responses = [
+          "I recommend checking your tire pressure.",
+          "Your oil change is due in 500 miles.",
+          "No issues detected in recent diagnostics."
+        ];
+        addMessage(responses[Math.floor(Math.random() * responses.length)], 'ai');
+      }, 1000);
     }
   });
 
-  // Smooth scrolling for anchor links
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-      e.preventDefault();
-
-      mobileMenu.classList.remove('active');
-      overlay.classList.remove('active');
-      document.body.style.overflow = '';
-
-      const targetId = this.getAttribute('href');
-      if (targetId === '#') return;
-
-      const targetElement = document.querySelector(targetId);
-      if (targetElement) {
-        window.scrollTo({
-          top: targetElement.offsetTop - 80,
-          behavior: 'smooth'
-        });
-      }
-    });
-  });
-
-  // Waitlist Form Submission
-  const waitlistForm = document.getElementById('waitlistForm');
-  if (waitlistForm) {
-    waitlistForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      alert('Thank you for joining our exclusive waitlist! You\'ll receive early access to Wheelie in your area.');
-      waitlistForm.reset();
-    });
+  function addMessage(text, sender) {
+    const chat = document.getElementById('chat-messages');
+    const message = document.createElement('div');
+    message.className = `message ${sender}-message`;
+    message.textContent = text;
+    chat.appendChild(message);
+    chat.scrollTop = chat.scrollHeight;
   }
 
-  // Intersection Observer for animations
-  const animateOnScroll = () => {
-    const sections = document.querySelectorAll('section');
-    const sectionTitles = document.querySelectorAll('.section-title');
-    const sectionSubtitles = document.querySelectorAll('.section-subtitle');
-    const steps = document.querySelectorAll('.step');
-    const serviceCards = document.querySelectorAll('.service-card');
-    const testimonialCards = document.querySelectorAll('.testimonial-card');
-    const heroContent = document.querySelector('.hero-content');
-    const technicianCTA = document.querySelector('.technician-cta-content');
-    const waitlistContent = document.querySelector('.waitlist-content');
+  // Quick Booking Modal
+  document.getElementById('quick-book').addEventListener('click', () => {
+    alert("🚗 Booking modal would open here!");
+  });
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    }, {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    });
-
-    if (heroContent) observer.observe(heroContent);
-    if (technicianCTA) observer.observe(technicianCTA);
-    if (waitlistContent) observer.observe(waitlistContent);
-
-    sectionTitles.forEach(title => observer.observe(title));
-    sectionSubtitles.forEach(subtitle => observer.observe(subtitle));
-    steps.forEach(step => observer.observe(step));
-    serviceCards.forEach(card => observer.observe(card));
-    testimonialCards.forEach(card => observer.observe(card));
-  };
-
-  // Initialize when DOM is loaded
+  // Initialize
   document.addEventListener('DOMContentLoaded', () => {
-    createParticles();
-    animateOnScroll();
-
-    // Preload images
-    const images = [
-      'https://images.unsplash.com/photo-1494972308805-463bc619d34e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80',
-      'https://images.unsplash.com/photo-1600679472829-3044539ce8ed?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80',
-      'https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80',
-      'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80',
-      'https://images.unsplash.com/photo-1607860108855-64acf2078ed9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80',
-      'https://images.unsplash.com/photo-1493238792000-8113da705763?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80'
-    ];
-
-    images.forEach(src => {
-      const img = new Image();
-      img.src = src;
-    });
+    init3D();
+    setTimeout(() => {
+      document.querySelectorAll('.fade-in').forEach(el => {
+        el.style.opacity = 1;
+      });
+    }, 300);
   });
 </script>
 </body>
